@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # -------------------------------------------------------------
+  # 1. MySQL 8.0 Relational Database
+  # -------------------------------------------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: doctodb-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_secure
+      MYSQL_DATABASE: doc_to_db
+      MYSQL_USER: doctodb_user
+      MYSQL_PASSWORD: doctodb_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password_secure"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - doctodb-network
+
+  # -------------------------------------------------------------
+  # 2. FastAPI + LangGraph Agent Backend Service
+  # -------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: doctodb-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=doc_to_db
+      - MYSQL_USER=doctodb_user
+      - MYSQL_PASSWORD=doctodb_password
+      - CHROMA_PERSIST_DIR=/app/data/chroma_db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - chroma_data:/app/data/chroma_db
+      - uploads_data:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - doctodb-network
+
+  # -------------------------------------------------------------
+  # 3. CodeIgniter 3 Frontend (Apache + PHP 8.2)
+  # -------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: doctodb-frontend
+    restart: unless-stopped
+    environment:
+      - FASTAPI_BASE_URL=http://backend:8000
+      - API_SECRET_KEY=doctodb_secret_api_key_2026_secure
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/var/www/html
+    depends_on:
+      - backend
+    networks:
+      - doctodb-network
+
+# -------------------------------------------------------------
+# Persistent Volumes (Preserve data across docker restart)
+# -------------------------------------------------------------
+volumes:
+  mysql_data:
+    name: doctodb_mysql_data
+  chroma_data:
+    name: doctodb_chroma_data
+  uploads_data:
+    name: doctodb_uploads_data
+
+networks:
+  doctodb-network:
+    driver: bridge

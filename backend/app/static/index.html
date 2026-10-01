@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocToDB | Universal Document-to-Database AI Platform</title>
+    
+    <!-- Modern Typography: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #090D16;
+            --card-bg: rgba(22, 28, 45, 0.85);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-hover-border: rgba(99, 102, 241, 0.4);
+            --primary-gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            --emerald-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            --amber-gradient: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            --cyan-gradient: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, .brand-title {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .custom-navbar {
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            padding: 0.5rem 0.85rem !important;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #fff !important;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.25s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--card-hover-border);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .metric-card { position: relative; overflow: hidden; }
+        .metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--primary-gradient); }
+        .metric-card.success::before { background: var(--emerald-gradient); }
+        .metric-card.warning::before { background: var(--amber-gradient); }
+        .metric-card.info::before { background: var(--cyan-gradient); }
+
+        .metric-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .dropzone-container {
+            border: 2px dashed rgba(99, 102, 241, 0.4);
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            background: rgba(99, 102, 241, 0.04);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dropzone-container:hover {
+            border-color: #8B5CF6;
+            background: rgba(99, 102, 241, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .dropzone-icon {
+            font-size: 2.75rem;
+            color: #8B5CF6;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .table-custom {
+            --bs-table-bg: transparent;
+            --bs-table-border-color: rgba(255, 255, 255, 0.07);
+        }
+
+        .table-custom th {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1rem;
+        }
+
+        .table-custom td {
+            padding: 0.85rem 1rem;
+            vertical-align: middle;
+            font-size: 0.875rem;
+        }
+
+        .doc-viewer-pane {
+            height: 700px;
+            background: #111827;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .doc-viewer-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .doc-edit-pane {
+            height: 700px;
+            overflow-y: auto;
+        }
+
+        .chat-container {
+            height: 520px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 0.85rem 1.15rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .chat-bubble.user {
+            align-self: flex-end;
+            background: var(--primary-gradient);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.assistant {
+            align-self: flex-start;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #F8FAFC;
+            border-bottom-left-radius: 4px;
+        }
+
+        .doc-type-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .type-invoice { background: rgba(139, 92, 246, 0.2); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.4); }
+        .type-resume { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+        .type-medical { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .type-contract { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+        .type-general { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4); }
+
+        .sample-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .sample-chip:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <div class="brand-icon"><i class="bi bi-cpu-fill"></i></div>
+                <div>
+                    <div class="brand-title fw-bold fs-5 text-light mb-0">Doc<span class="gradient-text">ToDB</span> <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 ms-1 small">Universal AI</span></div>
+                    <small class="text-secondary" style="font-size: 0.7rem;">Any Document &bull; Structured Database &bull; RAG Chat</small>
+                </div>
+            </a>
+            
+            <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="nav-dashboard" onclick="showTab('dashboard')">
+                            <i class="bi bi-grid-fill me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-upload" onclick="showTab('upload')">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload File
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-documents" onclick="showTab('documents')">
+                            <i class="bi bi-folder-fill me-1"></i> All Documents
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-queue" onclick="showTab('queue')">
+                            <i class="bi bi-shield-exclamation me-1"></i> Review Queue <span class="badge bg-warning text-dark ms-1" id="navQueueBadge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-invoices" onclick="showTab('invoices')">
+                            <i class="bi bi-receipt me-1"></i> Invoices Table
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nav-chat" onclick="showTab('chat')">
+                            <i class="bi bi-chat-dots-fill me-1"></i> Ask AI Assistant
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                            <i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i> System Live
+                        </span>
+                        <span class="badge rounded-pill bg-dark border border-secondary text-secondary font-mono px-2 py-1">
+                            Port 8000
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Workspace Container -->
+    <main class="container-fluid px-4 py-4">
+        <div id="contentArea">
+
+            <!-- TAB 1: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content-section">
+                <!-- Top Summary Metrics Row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="glass-card metric-card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="text-secondary small text-uppercase fw-semibold">Ingested Documents</span>
+                                    <div class="metric-value mt-1" id="statTotalDocs">0</div>
+                                    <span class="text-secondary small mt-1 d-block"><i class="bi bi-files me-1"></i> Across All Types</span>
+                                </div>
+                                <div class="metric-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-file-earmark-text-fill"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="glass-card metric-card success">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="text-secondary small text-uppercase fw-semibold">Auto-Approval Rate</span>
+                                    <div class="metric-value mt-1 text-success" id="statAutoRate">0%</div>
+                                    <span class="text-success small mt-1 d-block"><i class="bi bi-lightning-charge-fill me-1"></i> Threshold &ge; 85%</span>
+                                </div>
+                                <div class="metric-icon bg-success bg-opacity-10 text-success"><i class="bi bi-check2-circle"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="glass-card metric-card warning">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="text-secondary small text-uppercase fw-semibold">Human Review Queue</span>
+                                    <div class="metric-value mt-1 text-warning" id="statQueueCount">0</div>
+                                    <span class="text-warning small mt-1 d-block"><i class="bi bi-shield-alert me-1"></i> Needs Verification</span>
+                                </div>
+                                <div class="metric-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-person-badge-fill"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-sm-6">
+                        <div class="glass-card metric-card info">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="text-secondary small text-uppercase fw-semibold">Total Verified Spend</span>
+                                    <div class="metric-value mt-1" id="statTotalSpend">₹0.00</div>
+                                    <span class="text-info small mt-1 d-block" id="statTotalTax"><i class="bi bi-receipt me-1"></i> GST: ₹0.00</span>
+                                </div>
+                                <div class="metric-icon bg-info bg-opacity-10 text-info"><i class="bi bi-currency-rupee"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fast Dropzone & Pipeline Info -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-7">
+                        <div class="glass-card h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="fw-bold mb-0"><i class="bi bi-cloud-arrow-up-fill me-2 text-primary"></i> Universal Document Ingestion</h5>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Auto-Classifies Any File</span>
+                            </div>
+                            <p class="text-secondary small mb-3">Upload <strong>ANY document</strong> (Invoices, Resumes, Medical Reports, Legal Contracts, Utility Bills, ID Cards, or Forms). The AI automatically classifies the document type, extracts key attributes and tables, and commits structured data to the database.</p>
+                            
+                            <!-- Sample PDF Download Chips -->
+                            <div class="mb-3">
+                                <span class="small text-secondary fw-semibold d-block mb-2">Test with Instant Sample Documents:</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="/sample/Sample_GST_Invoice_01_Valid.pdf" download class="sample-chip">
+                                        <i class="bi bi-file-earmark-check text-success"></i> 📄 Valid GST Invoice
+                                    </a>
+                                    <a href="/sample/Sample_GST_Invoice_02_Review_Queue.pdf" download class="sample-chip">
+                                        <i class="bi bi-file-earmark-excel text-warning"></i> ⚠️ Review Queue Invoice
+                                    </a>
+                                    <a href="/sample/Sample_Resume_Senior_Engineer.pdf" download class="sample-chip">
+                                        <i class="bi bi-person-vcard text-info"></i> 👤 Sample Resume (PDF)
+                                    </a>
+                                    <a href="/sample/Sample_Medical_Lab_Report.pdf" download class="sample-chip">
+                                        <i class="bi bi-heart-pulse text-danger"></i> 🏥 Medical Lab Report (PDF)
+                                    </a>
+                                    <a href="/sample/Sample_Legal_Service_Agreement.pdf" download class="sample-chip">
+                                        <i class="bi bi-journal-text text-warning"></i> ⚖️ Legal Contract (PDF)
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="dropzone-container" onclick="document.getElementById('quickFileInput').click()">
+                                <input type="file" id="quickFileInput" class="d-none" accept=".pdf,.png,.jpg,.jpeg,.webp" onchange="uploadFileDirectly(this.files[0])">
+                                <i class="bi bi-file-earmark-arrow-up-fill dropzone-icon"></i>
+                                <h6 class="fw-bold mb-1">Click to Upload or Drag & Drop ANY Document</h6>
+                                <p class="text-muted small mb-0">PDF, PNG, JPEG, WebP (Max 15MB) &bull; Automatic Classification</p>
+                            </div>
+                            <div id="quickProgress" class="mt-3 d-none">
+                                <div class="progress" style="height: 8px;">
+                                    <div id="quickProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" style="width: 40%"></div>
+                                </div>
+                                <small id="quickStatusText" class="d-block mt-2 text-light"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="glass-card h-100">
+                            <h5 class="fw-bold mb-3"><i class="bi bi-stars me-2 text-info"></i> Universal Intelligent Engine</h5>
+                            <div class="d-flex flex-column gap-2 small">
+                                <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 d-flex gap-2">
+                                    <i class="bi bi-magic text-info fs-5"></i>
+                                    <div><strong>Zero-Config Auto Classification:</strong> Identifies Resumes, Medical Reports, Invoices, Contracts, and Receipts automatically.</div>
+                                </div>
+                                <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 d-flex gap-2">
+                                    <i class="bi bi-patch-check-fill text-success fs-5"></i>
+                                    <div><strong>GST Domain Rigor:</strong> For financial bills, executes MOD-36 checksum, Place of Supply, and tax slab compliance.</div>
+                                </div>
+                                <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 d-flex gap-2">
+                                    <i class="bi bi-diagram-3-fill text-primary fs-5"></i>
+                                    <div><strong>Dynamic Attribute DB:</strong> Relational key-value store records all custom fields, skills, diagnoses, and terms.</div>
+                                </div>
+                                <div class="p-2 rounded bg-dark border border-secondary border-opacity-25 d-flex gap-2">
+                                    <i class="bi bi-chat-quote-fill text-warning fs-5"></i>
+                                    <div><strong>Hybrid RAG Assistant:</strong> Instant conversational answers across all stored documents with source citations.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0"><i class="bi bi-table me-2 text-success"></i> Recent Invoices in Database</h5>
+                        <button class="btn btn-sm btn-outline-success" onclick="showTab('invoices')">View All Invoices</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Date</th>
+                                    <th>Vendor</th>
+                                    <th>GSTIN</th>
+                                    <th>Grand Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashInvoicesTbody">
+                                <tr><td colspan="6" class="text-center text-muted py-3">No verified invoices yet. Upload an invoice above!</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: UPLOAD -->
+            <div id="tab-upload" class="tab-content-section d-none">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="glass-card mb-4">
+                            <h4 class="fw-bold mb-3"><i class="bi bi-cloud-arrow-up-fill me-2 text-primary"></i> Upload ANY Document to Database</h4>
+                            <p class="text-secondary small">Upload Invoices, Resumes, Medical Lab Reports, Legal Contracts, Utility Bills, or Receipts. The multimodal AI will auto-detect the document structure, extract key entities, and index them into MySQL/SQLite and ChromaDB.</p>
+                            
+                            <div class="mb-3 p-3 rounded bg-dark border border-secondary border-opacity-25 d-flex align-items-center gap-3">
+                                <label class="small fw-semibold text-light mb-0">Multimodal AI Engine:</label>
+                                <select id="uploadModelSelect" class="form-select form-select-sm bg-dark text-light border-secondary w-auto">
+                                    <option value="gemini" selected>Google Gemini (Multimodal Vision)</option>
+                                    <option value="openai">OpenAI GPT-4o-mini</option>
+                                </select>
+                            </div>
+
+                            <div class="dropzone-container" onclick="document.getElementById('fullFileInput').click()">
+                                <input type="file" id="fullFileInput" class="d-none" accept=".pdf,.png,.jpg,.jpeg,.webp" onchange="uploadFileDirectly(this.files[0])">
+                                <i class="bi bi-file-earmark-arrow-up-fill dropzone-icon"></i>
+                                <h5 class="fw-bold mb-1">Click to Upload or Drag & Drop File</h5>
+                                <p class="text-muted small mb-0">Max Size 15MB &bull; Automatic Multimodal Processing & Classification</p>
+                            </div>
+
+                            <div id="fullProgress" class="mt-4 d-none">
+                                <div class="progress" style="height: 10px;">
+                                    <div id="fullProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" style="width: 40%"></div>
+                                </div>
+                                <div id="fullStatusText" class="mt-3 p-3 rounded bg-dark border border-secondary border-opacity-25 small text-light"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2B: ALL DOCUMENTS (UNIVERSAL REPOSITORY) -->
+            <div id="tab-documents" class="tab-content-section d-none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-folder2-open text-primary me-2"></i> All Ingested Documents</h4>
+                        <p class="text-secondary small mb-0">Unified repository of all documents across categories (Invoices, Resumes, Medical, Contracts, etc.).</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select id="docTypeFilter" class="form-select form-select-sm bg-dark text-light border-secondary w-auto" onchange="loadAllDocuments()">
+                            <option value="">All Document Types</option>
+                            <option value="INVOICE">Invoices</option>
+                            <option value="RESUME">Resumes</option>
+                            <option value="MEDICAL_REPORT">Medical Reports</option>
+                            <option value="LEGAL_CONTRACT">Contracts</option>
+                            <option value="GENERAL_DOCUMENT">General</option>
+                        </select>
+                        <button class="btn btn-sm btn-outline-primary" onclick="loadAllDocuments()"><i class="bi bi-arrow-clockwise me-1"></i> Refresh</button>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Document Title</th>
+                                    <th>Primary Entity</th>
+                                    <th>Summary</th>
+                                    <th>Confidence</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allDocsTbody">
+                                <tr><td colspan="7" class="text-center text-muted py-4">Loading documents...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: HITL REVIEW QUEUE -->
+            <div id="tab-queue" class="tab-content-section d-none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-shield-exclamation text-warning me-2"></i> Human-in-the-Loop Review Queue</h4>
+                        <p class="text-secondary small mb-0">Documents flagged by the agent for checksum errors, math inconsistencies, or low confidence.</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary" onclick="loadQueue()"><i class="bi bi-arrow-clockwise me-1"></i> Refresh</button>
+                </div>
+                <div class="glass-card">
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Document</th>
+                                    <th>Confidence</th>
+                                    <th>Retries</th>
+                                    <th>Flagged Diagnostics</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="queueTbody">
+                                <tr><td colspan="7" class="text-center text-muted py-4">Loading queue...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3B: SPLIT-SCREEN VERIFICATION WORKSPACE -->
+            <div id="tab-verify" class="tab-content-section d-none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-shield-check text-primary me-2"></i> Split-Screen Human Verification Workspace</h4>
+                        <small class="text-secondary" id="verifyDocSubtitle">Reviewing document</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="showTab('queue')"><i class="bi bi-arrow-left me-1"></i> Back to Queue</button>
+                </div>
+
+                <div id="verifyFlagsAlert" class="alert alert-warning mb-3 d-none"></div>
+
+                <div class="row g-3">
+                    <!-- LEFT: Document Viewer -->
+                    <div class="col-lg-6">
+                        <div class="doc-viewer-pane">
+                            <div class="p-2 px-3 bg-dark border-bottom border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                                <span class="small fw-semibold text-light"><i class="bi bi-eye-fill me-1 text-primary"></i> Source Document Preview</span>
+                                <a id="verifyRawLink" href="#" target="_blank" class="btn btn-xs btn-outline-info text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i> Open Raw</a>
+                            </div>
+                            <div class="flex-grow-1 position-relative" id="docViewerContainer">
+                                <!-- Document Embed / Image dynamically inserted -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Dynamic Editable Form (Adapts to Invoice vs Other Document) -->
+                    <div class="col-lg-6">
+                        <div class="glass-card doc-edit-pane">
+                            <form id="verifyForm" onsubmit="submitVerification(event)">
+                                
+                                <!-- Document Classification Badge -->
+                                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <label class="small text-secondary fw-semibold mb-0">Document Type:</label>
+                                        <span id="v_doc_type_badge" class="doc-type-badge type-invoice">INVOICE</span>
+                                    </div>
+                                    <input type="hidden" id="v_document_type" value="INVOICE">
+                                </div>
+
+                                <!-- Universal Metadata Fields -->
+                                <div class="mb-3">
+                                    <label class="form-label small text-secondary mb-1">Document Title</label>
+                                    <input type="text" id="v_document_title" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-sm-6">
+                                        <label class="form-label small text-secondary mb-1">Primary Subject / Entity</label>
+                                        <input type="text" id="v_primary_entity" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label small text-secondary mb-1">Secondary / Counterparty</label>
+                                        <input type="text" id="v_secondary_entity" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-secondary mb-1">Executive Summary</label>
+                                    <textarea id="v_summary" class="form-control form-control-sm bg-dark text-light border-secondary" rows="2"></textarea>
+                                </div>
+
+                                <!-- INVOICE SPECIFIC SECTION (Hidden if non-invoice) -->
+                                <div id="invoiceFieldsSection">
+                                    <h6 class="fw-bold text-light mb-2"><i class="bi bi-receipt me-1 text-primary"></i> Invoice & GST Compliance Details</h6>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label small text-secondary mb-1">Invoice Number *</label>
+                                            <input type="text" id="v_invoice_number" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label small text-secondary mb-1">Date</label>
+                                            <input type="date" id="v_invoice_date" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label small text-secondary mb-1">Due Date</label>
+                                            <input type="date" id="v_due_date" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label small text-secondary mb-1">Vendor Name</label>
+                                            <input type="text" id="v_vendor_name" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label small text-secondary mb-1">Vendor GSTIN</label>
+                                            <input type="text" id="v_vendor_gstin" class="form-control form-control-sm bg-dark text-light border-secondary font-mono">
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label small text-secondary mb-1">Customer Name</label>
+                                            <input type="text" id="v_customer_name" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label small text-secondary mb-1">Customer GSTIN</label>
+                                            <input type="text" id="v_customer_gstin" class="form-control form-control-sm bg-dark text-light border-secondary font-mono">
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label small text-secondary mb-1">Place of Supply (POS)</label>
+                                            <input type="text" id="v_place_of_supply" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-6 d-flex align-items-center mt-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="v_is_interstate" onchange="recalcVerifyMath()">
+                                                <label class="form-check-label small text-light" for="v_is_interstate">Inter-State Transaction (IGST)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="fw-bold text-light mb-2"><i class="bi bi-calculator me-1 text-success"></i> Financial Totals</h6>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-sm-4">
+                                            <label class="form-label small text-secondary mb-1">Subtotal (₹)</label>
+                                            <input type="number" step="0.01" id="v_subtotal" class="form-control form-control-sm bg-dark text-light border-secondary" onchange="recalcVerifyMath()">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label small text-secondary mb-1">CGST (₹)</label>
+                                            <input type="number" step="0.01" id="v_cgst" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label small text-secondary mb-1">SGST (₹)</label>
+                                            <input type="number" step="0.01" id="v_sgst" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label small text-secondary mb-1">IGST (₹)</label>
+                                            <input type="number" step="0.01" id="v_igst" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label small text-secondary mb-1">Total Tax (₹)</label>
+                                            <input type="number" step="0.01" id="v_total_tax" class="form-control form-control-sm bg-dark text-light border-secondary">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label small text-secondary mb-1">Grand Total (₹)</label>
+                                            <input type="number" step="0.01" id="v_grand_total" class="form-control form-control-sm bg-dark text-light border-success fw-bold text-success">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DYNAMIC KEY FIELDS SECTION (For Resumes, Medical, Contracts, etc.) -->
+                                <div id="dynamicFieldsSection" class="mb-3">
+                                    <h6 class="fw-bold text-light mb-2"><i class="bi bi-tags me-1 text-info"></i> Extracted Attributes & Key Fields</h6>
+                                    <div id="dynamicFieldsContainer" class="p-3 rounded bg-dark border border-secondary border-opacity-25 small">
+                                        <span class="text-muted">No custom attributes extracted.</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-secondary border-opacity-25">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="showTab('queue')">Cancel</button>
+                                    <button type="submit" id="btnApproveVerify" class="btn btn-sm btn-success px-3">
+                                        <i class="bi bi-check2-circle me-1"></i> Approve & Save to Database
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: INVOICES TABLE -->
+            <div id="tab-invoices" class="tab-content-section d-none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-database-check text-success me-2"></i> Structured Invoices Database</h4>
+                        <p class="text-secondary small mb-0">Verified, deduplicated financial records stored in MySQL/SQLite.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-info" onclick="exportCsv()"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Export Data</button>
+                        <button class="btn btn-sm btn-outline-primary" onclick="loadInvoices()"><i class="bi bi-arrow-clockwise me-1"></i> Refresh</button>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Date</th>
+                                    <th>Vendor</th>
+                                    <th>Customer</th>
+                                    <th>Subtotal</th>
+                                    <th>Tax</th>
+                                    <th>Grand Total</th>
+                                    <th>Verification</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoicesTbody">
+                                <tr><td colspan="8" class="text-center text-muted py-4">Loading verified records...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: ASK AI ASSISTANT (HYBRID RAG CHAT) -->
+            <div id="tab-chat" class="tab-content-section d-none">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="glass-card mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 class="fw-bold mb-0"><i class="bi bi-chat-dots-fill text-primary me-2"></i> Universal Document AI Assistant</h4>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Hybrid RAG + SQL Tools</span>
+                            </div>
+                            <p class="text-secondary small mb-3">Ask questions in natural language across <strong>ANY uploaded document</strong> — Invoices, Resumes, Medical Reports, or Contracts.</p>
+
+                            <!-- Suggested Questions -->
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <button class="btn btn-xs btn-outline-secondary" onclick="sendQuickChat('Acme Cloud ke kitne invoices pending hain?')">
+                                    <i class="bi bi-receipt me-1 text-info"></i> Acme Cloud invoices
+                                </button>
+                                <button class="btn btn-xs btn-outline-secondary" onclick="sendQuickChat('Rahul Verma ke pass kaun-kaun se skills aur experience hain?')">
+                                    <i class="bi bi-person-vcard me-1 text-primary"></i> Rahul Verma skills
+                                </button>
+                                <button class="btn btn-xs btn-outline-secondary" onclick="sendQuickChat('Dr. Arvind Mehta ne patient Priya Sharma ko kya prescribe kiya?')">
+                                    <i class="bi bi-heart-pulse me-1 text-danger"></i> Priya Sharma diagnosis
+                                </button>
+                                <button class="btn btn-xs btn-outline-secondary" onclick="sendQuickChat('Master Service Agreement ke payment terms aur contract value kya hai?')">
+                                    <i class="bi bi-journal-text me-1 text-warning"></i> Contract terms
+                                </button>
+                            </div>
+
+                            <div class="chat-container glass-card p-0 mb-3">
+                                <div class="chat-messages" id="chatMessages">
+                                    <div class="chat-bubble assistant">
+                                        <div><strong>Hello! I am DocToDB Universal Assistant.</strong></div>
+                                        <div class="small mt-1 text-secondary">I can answer questions on all uploaded documents — calculating financial sums, finding candidate skills from resumes, inspecting medical prescriptions, or summarizing legal agreements. What would you like to know?</div>
+                                    </div>
+                                </div>
+                                <form id="chatForm" onsubmit="submitChat(event)" class="p-3 border-top border-secondary border-opacity-25 bg-dark d-flex gap-2">
+                                    <input type="text" id="chatInput" class="form-control bg-dark text-light border-secondary" placeholder="Ask anything about your documents (e.g., 'What is the total spend in March?' or 'What skills does Rahul have?')..." required>
+                                    <button type="submit" class="btn btn-primary px-4"><i class="bi bi-send-fill me-1"></i> Ask</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const API_KEY = "doctodb_secret_api_key_2026_secure";
+        let activeDocId = null;
+        let activeExtractedData = {};
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content-section').forEach(el => el.classList.add('d-none'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('d-none');
+
+            const navBtn = document.getElementById(`nav-${tabId}`);
+            if (navBtn) navBtn.classList.add('active');
+
+            if (tabId === 'dashboard') loadDashboard();
+            if (tabId === 'documents') loadAllDocuments();
+            if (tabId === 'queue') loadQueue();
+            if (tabId === 'invoices') loadInvoices();
+        }
+
+        function getDocTypeBadgeHtml(type) {
+            const t = (type || 'GENERAL_DOCUMENT').toUpperCase();
+            if (t.includes('INVOICE') || t.includes('RECEIPT') || t.includes('BILL')) {
+                return `<span class="doc-type-badge type-invoice"><i class="bi bi-receipt me-1"></i>${t}</span>`;
+            } else if (t.includes('RESUME') || t.includes('CV')) {
+                return `<span class="doc-type-badge type-resume"><i class="bi bi-person-vcard me-1"></i>${t}</span>`;
+            } else if (t.includes('MEDICAL')) {
+                return `<span class="doc-type-badge type-medical"><i class="bi bi-heart-pulse me-1"></i>${t}</span>`;
+            } else if (t.includes('CONTRACT') || t.includes('LEGAL')) {
+                return `<span class="doc-type-badge type-contract"><i class="bi bi-journal-text me-1"></i>${t}</span>`;
+            } else {
+                return `<span class="doc-type-badge type-general"><i class="bi bi-file-earmark me-1"></i>${t}</span>`;
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/stats');
+                const stats = await res.json();
+                document.getElementById('statTotalDocs').innerText = stats.total_documents;
+                document.getElementById('statAutoRate').innerText = `${stats.auto_approved_percent}%`;
+                document.getElementById('statQueueCount').innerText = stats.pending_review_count;
+                document.getElementById('navQueueBadge').innerText = stats.pending_review_count;
+                document.getElementById('statTotalSpend').innerText = `₹${stats.total_grand_amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+                document.getElementById('statTotalTax').innerHTML = `<i class="bi bi-receipt me-1"></i> GST: ₹${stats.total_tax_amount.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+
+                const invRes = await fetch('/api/invoices?limit=5');
+                const invData = await invRes.json();
+                const tbody = document.getElementById('dashInvoicesTbody');
+                if (invData.invoices && invData.invoices.length > 0) {
+                    tbody.innerHTML = invData.invoices.map(inv => `
+                        <tr>
+                            <td><strong class="text-info">${inv.invoice_number}</strong></td>
+                            <td>${inv.invoice_date}</td>
+                            <td>${inv.vendor_name}</td>
+                            <td><code class="text-info">${inv.vendor_gstin}</code></td>
+                            <td><strong>₹${inv.grand_total.toLocaleString('en-IN', {minimumFractionDigits: 2})}</strong></td>
+                            <td><span class="badge bg-success-subtle text-success">${inv.verification_type}</span></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">No verified invoices yet. Upload a document above!</td></tr>`;
+                }
+            } catch (e) {
+                console.error("Dashboard load error:", e);
+            }
+        }
+
+        async function loadAllDocuments() {
+            try {
+                const typeFilter = document.getElementById('docTypeFilter')?.value || '';
+                let url = '/api/documents';
+                if (typeFilter) url += `?document_type=${typeFilter}`;
+
+                const res = await fetch(url);
+                const docs = await res.json();
+                const tbody = document.getElementById('allDocsTbody');
+
+                if (docs && docs.length > 0) {
+                    tbody.innerHTML = docs.map(d => {
+                        const score = Math.round(d.composite_confidence * 100);
+                        const bClass = score >= 85 ? 'bg-success' : (score >= 70 ? 'bg-warning text-dark' : 'bg-danger');
+                        const statusClass = d.status === 'AUTO_APPROVED' ? 'bg-success-subtle text-success' : (d.status === 'PENDING_REVIEW' ? 'bg-warning-subtle text-warning' : 'bg-info-subtle text-info');
+                        return `
+                            <tr>
+                                <td>${getDocTypeBadgeHtml(d.document_type)}</td>
+                                <td><strong>${d.document_title || d.original_filename}</strong><small class="text-muted d-block font-mono">${d.id.substring(0, 8)}...</small></td>
+                                <td>${d.primary_entity || '<span class="text-muted">N/A</span>'}</td>
+                                <td><span class="text-secondary small">${d.summary ? d.summary.substring(0, 60) + '...' : d.original_filename}</span></td>
+                                <td><span class="badge ${bClass}">${score}%</span></td>
+                                <td><span class="badge ${statusClass}">${d.status}</span></td>
+                                <td class="text-end">
+                                    <button class="btn btn-xs btn-outline-primary" onclick="openVerification('${d.id}')">
+                                        <i class="bi bi-eye me-1"></i> Inspect
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No documents found. Upload one above!</td></tr>`;
+                }
+            } catch (e) {
+                console.error("All documents load error:", e);
+            }
+        }
+
+        async function loadQueue() {
+            try {
+                const res = await fetch('/api/documents/queue');
+                const docs = await res.json();
+                const tbody = document.getElementById('queueTbody');
+                document.getElementById('navQueueBadge').innerText = docs.length;
+
+                if (docs && docs.length > 0) {
+                    tbody.innerHTML = docs.map(d => {
+                        const score = Math.round(d.composite_confidence * 100);
+                        const bClass = score >= 85 ? 'bg-success' : (score >= 70 ? 'bg-warning text-dark' : 'bg-danger');
+                        const flags = (d.flagged_reasons && d.flagged_reasons.length > 0) ? d.flagged_reasons[0] : 'Pending review';
+                        return `
+                            <tr>
+                                <td>${getDocTypeBadgeHtml(d.document_type)}</td>
+                                <td><strong>${d.document_title || d.original_filename}</strong><small class="text-muted d-block font-mono">${d.id}</small></td>
+                                <td><span class="badge ${bClass}">${score}%</span></td>
+                                <td><span class="badge bg-dark border border-secondary">${d.retry_count} retries</span></td>
+                                <td class="text-warning small">${flags}</td>
+                                <td><span class="badge bg-warning-subtle text-warning">${d.status}</span></td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-primary" onclick="openVerification('${d.id}')">
+                                        <i class="bi bi-pencil-square me-1"></i> Verify & Correct
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4"><i class="bi bi-check-circle-fill text-success fs-3 d-block mb-2"></i>Review queue is clear! All documents verified.</td></tr>`;
+                }
+            } catch (e) {
+                console.error("Queue load error:", e);
+            }
+        }
+
+        async function openVerification(docId) {
+            activeDocId = docId;
+            showTab('verify');
+            try {
+                const res = await fetch(`/api/documents/${docId}`);
+                const doc = await res.json();
+
+                const docType = (doc.document_type || 'GENERAL_DOCUMENT').toUpperCase();
+                document.getElementById('v_document_type').value = docType;
+                document.getElementById('v_doc_type_badge').outerHTML = `<span id="v_doc_type_badge">${getDocTypeBadgeHtml(docType)}</span>`;
+
+                document.getElementById('verifyDocSubtitle').innerHTML = `<strong>${doc.document_title || doc.original_filename}</strong> | Confidence: <span class="badge bg-warning text-dark">${Math.round(doc.composite_confidence * 100)}%</span>`;
+                document.getElementById('verifyRawLink').href = `/${doc.stored_filepath}`;
+
+                // Source Document Preview
+                const viewer = document.getElementById('docViewerContainer');
+                if (doc.file_type && doc.file_type.includes('pdf')) {
+                    viewer.innerHTML = `<embed src="/${doc.stored_filepath}" type="application/pdf" class="doc-viewer-frame">`;
+                } else {
+                    viewer.innerHTML = `<div class="p-3 text-center h-100 overflow-auto"><img src="/${doc.stored_filepath}" class="img-fluid rounded border border-secondary border-opacity-25"></div>`;
+                }
+
+                // Flags alert
+                const alertEl = document.getElementById('verifyFlagsAlert');
+                if (doc.flagged_reasons && doc.flagged_reasons.length > 0) {
+                    alertEl.classList.remove('d-none');
+                    alertEl.innerHTML = `<strong><i class="bi bi-exclamation-triangle-fill me-1"></i> Validation Diagnostics:</strong><ul class="mb-0 mt-1 small">${doc.flagged_reasons.map(r => `<li>${r}</li>`).join('')}</ul>`;
+                } else {
+                    alertEl.classList.add('d-none');
+                }
+
+                const data = doc.extracted_json || {};
+                activeExtractedData = data;
+
+                // Universal Metadata fields
+                document.getElementById('v_document_title').value = data.document_title || doc.document_title || doc.original_filename;
+                document.getElementById('v_primary_entity').value = data.primary_entity || doc.primary_entity || data.vendor_name || '';
+                document.getElementById('v_secondary_entity').value = data.secondary_entity || data.customer_name || '';
+                document.getElementById('v_summary').value = data.summary || doc.summary || '';
+
+                // Show/Hide Invoice specific section
+                const invSection = document.getElementById('invoiceFieldsSection');
+                const isInvoice = (docType.includes('INVOICE') || docType.includes('RECEIPT') || docType.includes('BILL') || (docType === 'GENERAL_DOCUMENT' && (data.invoice_number || data.vendor_gstin)));
+                
+                if (isInvoice) {
+                    invSection.classList.remove('d-none');
+                    const inv = data.invoice_data || data;
+                    document.getElementById('v_invoice_number').value = inv.invoice_number || '';
+                    document.getElementById('v_invoice_date').value = inv.invoice_date || new Date().toISOString().split('T')[0];
+                    document.getElementById('v_due_date').value = inv.due_date || '';
+                    document.getElementById('v_vendor_name').value = inv.vendor_name || '';
+                    document.getElementById('v_vendor_gstin').value = inv.vendor_gstin || '';
+                    document.getElementById('v_customer_name').value = inv.customer_name || '';
+                    document.getElementById('v_customer_gstin').value = inv.customer_gstin || '';
+                    document.getElementById('v_place_of_supply').value = inv.place_of_supply || '';
+                    document.getElementById('v_is_interstate').checked = !!inv.is_interstate;
+                    document.getElementById('v_subtotal').value = inv.subtotal_amount || 0;
+                    document.getElementById('v_cgst').value = inv.cgst_amount || 0;
+                    document.getElementById('v_sgst').value = inv.sgst_amount || 0;
+                    document.getElementById('v_igst').value = inv.igst_amount || 0;
+                    document.getElementById('v_total_tax').value = inv.total_tax_amount || 0;
+                    document.getElementById('v_grand_total').value = inv.grand_total || 0;
+                } else {
+                    invSection.classList.add('d-none');
+                }
+
+                // Render dynamic key fields
+                const dynContainer = document.getElementById('dynamicFieldsContainer');
+                const kf = data.key_fields || {};
+                if (Object.keys(kf).length > 0) {
+                    let kfHtml = '<div class="row g-2">';
+                    for (const [k, v] of Object.entries(kf)) {
+                        let displayVal = '';
+                        if (typeof v === 'object' && v !== null) {
+                            if (Array.isArray(v)) {
+                                displayVal = v.map(item => typeof item === 'object' ? JSON.stringify(item) : item).join(', ');
+                            } else {
+                                displayVal = Object.entries(v)
+                                    .map(([subk, subv]) => `${subk}: ${Array.isArray(subv) ? subv.join(', ') : subv}`)
+                                    .join(' | ');
+                            }
+                        } else {
+                            displayVal = String(v ?? '');
+                        }
+                        
+                        const safeAttrVal = displayVal.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        const labelTitle = k.replace(/_/g, ' ').toUpperCase();
+                        
+                        kfHtml += `
+                            <div class="col-sm-6">
+                                <label class="small text-secondary mb-1 text-truncate d-block fw-bold">${labelTitle}</label>
+                                <input type="text" class="form-control form-control-sm bg-dark text-light border-secondary dyn-key-field" data-key="${k}" value="${safeAttrVal}">
+                            </div>
+                        `;
+                    }
+                    kfHtml += '</div>';
+                    dynContainer.innerHTML = kfHtml;
+                } else {
+                    dynContainer.innerHTML = '<span class="text-muted">No custom attributes extracted.</span>';
+                }
+
+            } catch (e) {
+                alert("Failed to load document details: " + e.message);
+            }
+        }
+
+        function recalcVerifyMath() {
+            const sub = parseFloat(document.getElementById('v_subtotal').value) || 0;
+            const isInter = document.getElementById('v_is_interstate').checked;
+            let cgst = 0, sgst = 0, igst = 0;
+            const tax = sub * 0.18;
+            if (isInter) {
+                igst = tax;
+            } else {
+                cgst = tax / 2;
+                sgst = tax / 2;
+            }
+            document.getElementById('v_cgst').value = cgst.toFixed(2);
+            document.getElementById('v_sgst').value = sgst.toFixed(2);
+            document.getElementById('v_igst').value = igst.toFixed(2);
+            document.getElementById('v_total_tax').value = tax.toFixed(2);
+            document.getElementById('v_grand_total').value = (sub + tax).toFixed(2);
+        }
+
+        async function submitVerification(e) {
+            e.preventDefault();
+            if (!activeDocId) return;
+            const btn = document.getElementById('btnApproveVerify');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving...';
+
+            const docType = document.getElementById('v_document_type').value || 'GENERAL_DOCUMENT';
+            
+            // Collect dynamic key fields
+            const dynFields = {};
+            document.querySelectorAll('.dyn-key-field').forEach(input => {
+                const k = input.getAttribute('data-key');
+                dynFields[k] = input.value;
+            });
+
+            // Build corrected data payload
+            const corrected = {
+                ...activeExtractedData,
+                document_type: docType,
+                document_title: document.getElementById('v_document_title').value,
+                primary_entity: document.getElementById('v_primary_entity').value,
+                secondary_entity: document.getElementById('v_secondary_entity').value,
+                summary: document.getElementById('v_summary').value,
+                key_fields: Object.keys(dynFields).length > 0 ? dynFields : (activeExtractedData.key_fields || {})
+            };
+
+            // If invoice fields were visible
+            const isInvoice = (docType.includes('INVOICE') || docType.includes('RECEIPT') || docType.includes('BILL') || (docType === 'GENERAL_DOCUMENT' && document.getElementById('v_invoice_number').value));
+            if (isInvoice) {
+                const invPayload = {
+                    invoice_number: document.getElementById('v_invoice_number').value,
+                    invoice_date: document.getElementById('v_invoice_date').value,
+                    due_date: document.getElementById('v_due_date').value || null,
+                    currency: "INR",
+                    vendor_name: document.getElementById('v_vendor_name').value,
+                    vendor_gstin: document.getElementById('v_vendor_gstin').value,
+                    customer_name: document.getElementById('v_customer_name').value,
+                    customer_gstin: document.getElementById('v_customer_gstin').value || null,
+                    place_of_supply: document.getElementById('v_place_of_supply').value,
+                    is_interstate: document.getElementById('v_is_interstate').checked,
+                    subtotal_amount: parseFloat(document.getElementById('v_subtotal').value) || 0,
+                    cgst_amount: parseFloat(document.getElementById('v_cgst').value) || 0,
+                    sgst_amount: parseFloat(document.getElementById('v_sgst').value) || 0,
+                    igst_amount: parseFloat(document.getElementById('v_igst').value) || 0,
+                    total_tax_amount: parseFloat(document.getElementById('v_total_tax').value) || 0,
+                    grand_total: parseFloat(document.getElementById('v_grand_total').value) || 0,
+                    items: activeExtractedData.items || []
+                };
+                corrected.invoice_data = invPayload;
+                // Merge top-level for backwards compatibility
+                Object.assign(corrected, invPayload);
+            }
+
+            try {
+                const res = await fetch(`/api/documents/${activeDocId}/review`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+                    body: JSON.stringify({
+                        reviewer_name: "auditor",
+                        corrected_data: corrected
+                    })
+                });
+                let result = {};
+                try {
+                    result = await res.json();
+                } catch (jsonErr) {
+                    const txt = await res.text().catch(() => "");
+                    result = { detail: txt || `Server returned status ${res.status}` };
+                }
+
+                if (res.ok) {
+                    alert(`${docType} verified and saved to database successfully!`);
+                    showTab('documents');
+                } else {
+                    alert("Error: " + (result.detail || "Verification failed"));
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Approve & Save to Database';
+                }
+            } catch (err) {
+                alert("Request error: " + err.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Approve & Save to Database';
+            }
+        }
+
+        async function loadInvoices() {
+            try {
+                const res = await fetch('/api/invoices');
+                const data = await res.json();
+                const tbody = document.getElementById('invoicesTbody');
+                if (data.invoices && data.invoices.length > 0) {
+                    tbody.innerHTML = data.invoices.map(inv => `
+                        <tr>
+                            <td><strong class="text-info">${inv.invoice_number}</strong></td>
+                            <td>${inv.invoice_date}</td>
+                            <td><strong>${inv.vendor_name}</strong><small class="text-muted d-block font-mono">${inv.vendor_gstin}</small></td>
+                            <td>${inv.customer_name}</td>
+                            <td>₹${inv.subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                            <td>₹${inv.total_tax.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+                            <td><strong class="text-success">₹${inv.grand_total.toLocaleString('en-IN', {minimumFractionDigits: 2})}</strong></td>
+                            <td><span class="badge bg-success-subtle text-success">${inv.verification_type}</span></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">No verified invoices in database yet.</td></tr>`;
+                }
+            } catch (e) {
+                console.error("Invoices load error:", e);
+            }
+        }
+
+        async function uploadFileDirectly(file) {
+            if (!file) return;
+            const progress = document.getElementById('quickProgress');
+            const pBar = document.getElementById('quickProgressBar');
+            const pText = document.getElementById('quickStatusText');
+
+            progress.classList.remove('d-none');
+            pBar.style.width = "40%";
+            pText.innerHTML = `<i class="bi bi-gear-wide-connected spin me-1"></i> Analyzing ${file.name} with Universal Multimodal AI...`;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            const prov = document.getElementById('uploadModelSelect')?.value || 'gemini';
+            formData.append('provider', prov);
+
+            try {
+                const res = await fetch('/api/documents/upload', {
+                    method: 'POST',
+                    headers: { 'X-API-Key': API_KEY },
+                    body: formData
+                });
+                const data = await res.json();
+                pBar.style.width = "100%";
+                if (res.ok) {
+                    pText.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Success! Status: <strong>${data.status}</strong>. Redirecting...</span>`;
+                    setTimeout(() => {
+                        progress.classList.add('d-none');
+                        openVerification(data.document_id);
+                    }, 1000);
+                } else {
+                    pText.innerHTML = `<span class="text-danger"><i class="bi bi-x-circle-fill me-1"></i> Error: ${data.detail || "Upload failed"}</span>`;
+                }
+            } catch (e) {
+                pText.innerHTML = `<span class="text-danger">Request error: ${e.message}</span>`;
+            }
+        }
+
+        async function submitChat(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const q = input.value.trim();
+            if (!q) return;
+            input.value = '';
+            sendChatQuery(q);
+        }
+
+        function sendQuickChat(q) {
+            showTab('chat');
+            sendChatQuery(q);
+        }
+
+        async function sendChatQuery(q) {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML += `<div class="chat-bubble user">${q}</div>`;
+            const loadId = 'load_' + Date.now();
+            container.innerHTML += `<div id="${loadId}" class="chat-bubble assistant"><span class="spinner-border spinner-border-sm text-primary me-2"></span>Searching documents in database & ChromaDB vector store...</div>`;
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+                    body: JSON.stringify({ query: q })
+                });
+                const data = await res.json();
+                document.getElementById(loadId)?.remove();
+
+                const badge = data.query_type === 'STRUCTURED_SQL_TOOL'
+                    ? `<span class="badge bg-success-subtle text-success border border-success-subtle mb-2"><i class="bi bi-database-check me-1"></i> SQL Database Tool: <code>${data.tool_called}</code></span>`
+                    : `<span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-2"><i class="bi bi-file-earmark-text me-1"></i> ChromaDB Vector RAG</span>`;
+
+                container.innerHTML += `
+                    <div class="chat-bubble assistant">
+                        ${badge}
+                        <div>${data.answer.replace(/\n/g, '<br>')}</div>
+                    </div>
+                `;
+                container.scrollTop = container.scrollHeight;
+            } catch (err) {
+                document.getElementById(loadId)?.remove();
+                container.innerHTML += `<div class="chat-bubble assistant text-danger">Error: ${err.message}</div>`;
+            }
+        }
+
+        function exportCsv() {
+            window.open('/api/invoices', '_blank');
+        }
+
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', () => showTab('dashboard'));
+    </script>
+</body>
+</html>
